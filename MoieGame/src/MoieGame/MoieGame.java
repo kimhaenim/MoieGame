@@ -12,6 +12,9 @@ class score{
 	public void start() {
 		cnt++;
 	}
+	public void fever() {
+		cnt+=2;
+	}
 	public String getscore() {
 		return " 현재 점수: "+cnt+"점 !";
 	}
@@ -104,7 +107,11 @@ class frame extends JFrame{
 	ImageIcon moie1 = new ImageIcon("images/moie1.jpg");
 	ImageIcon moie2 = new ImageIcon("images/moie2.jpg");
 	ImageIcon moie3 = new ImageIcon("images/moie3.jpg");
-	JLabel hammer = new JLabel(new ImageIcon("images/뿅망치.jpg"));
+	Toolkit toolkit = Toolkit.getDefaultToolkit();
+	Image image = toolkit.getImage("images/hammer1.jpg");
+	Image image2 = toolkit.getImage("images/hammer2.jpg");
+	Point hotspot = new Point(0,0);
+	Cursor cursor = toolkit.createCustomCursor(image, hotspot, "hammer1");
 	JLabel scorecount = new JLabel(s.getscore());
 	JLabel tab = new JLabel("");
 	JLabel time = new JLabel("");
@@ -116,7 +123,7 @@ class frame extends JFrame{
 		c.setBackground(Color.GREEN);
 		score.setBackground(Color.PINK);
 		moiePane.setBackground(Color.GREEN);
-		
+		setCursor(cursor);
 		for(int i=0; i<9; i++) {
 			hole[i]= new JButton(moie1);
 			hole[i].setBackground(Color.GREEN);
@@ -129,6 +136,7 @@ class frame extends JFrame{
 			moiePane.add(hole[i]);
 		}
 
+	
 		TimerThread3 timethread = new TimerThread3(time, moiePane, end);
 		score.add(scorecount);
 		score.add(tab);
@@ -150,11 +158,23 @@ class frame extends JFrame{
 					}
 			}
 		}
+			if(s.getscore_end().equals("20")){
+				//20점 돌파시 피버타임! //나중에 20의 배수일떄마다 피버타임으로 변경하기
+				
+			}
 			scorecount.setText(s.getscore());
 			end.setText("당신의 총 점수는 "+s.getscore_end()+"점입니다!");
 		}
 	}
+	class MyMouseListener extends MouseAdapter{
+		public void mouseclicked(MouseEvent e) {
+			System.out.println("click");
+			Cursor cursor = toolkit.createCustomCursor(image, hotspot, "hammer2");
+			setCursor(cursor); //뿅망치를 눌렀을때 변경 해결중
+		}
+	}
 }
+
 public class MoieGame {
 	public static void main(String[] args) {
 		frame Frame = new frame();
