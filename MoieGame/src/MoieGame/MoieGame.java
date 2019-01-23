@@ -46,7 +46,6 @@ class feverstarttime extends Thread{
 		while(true) {
 			if(timer==0) {
 				counter.setText("0");
-				System.out.println(counter.getText());
 				break;
 			}
 			timer--;
@@ -116,11 +115,11 @@ class timeover extends Thread{
 		this.end= end;
 	}
 	public void run() {
-		int n=60;
+		int n=30;
 		while(true) {
 			if(n==0) {
 				moiePane.removeAll();
-				moiePane.add(end);
+				moiePane.add(end); //남은시간이 0초가 되었을때 총점수를 알려주는 화면 깔끔하게 변경할것
 				end.setSize(500,500);
 				end.setLocation(250,250);
 			}
@@ -242,6 +241,7 @@ class frame extends JFrame{
 		
 	}
 	class MyActionListener implements ActionListener{
+		//두더지를 잡을 때마다 잡았다는 표시 할것
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource()==start) {
 				startPane.hide();
@@ -274,7 +274,7 @@ class frame extends JFrame{
 			}
 			scorecount.setText(s.getscore());
 			end.setText("당신의 총 점수는 "+s.getscore_end()+"점입니다!");
-			if(s.getscore_end().equals("20")){
+			if(s.getscore_end().equals("20")||s.getscore_end().equals("120")){
 				fever();
 			}
 			if(counter.getText().equals("0")) {
@@ -287,7 +287,7 @@ class frame extends JFrame{
 		public void mouseclicked(MouseEvent e) {
 			System.out.println("click");
 			Cursor cursor = toolkit.createCustomCursor(image, hotspot, "hammer2");
-			setCursor(cursor); //뿅망치를 눌렀을때 변경 해결중
+			setCursor(cursor); //마우스 모양 수정해야함. 뿅망치를 눌렀을때 변경 해결중
 		}
 	}
 	public static void fever() {
