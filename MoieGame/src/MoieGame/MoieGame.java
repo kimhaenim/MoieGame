@@ -125,7 +125,7 @@ class timeover extends Thread{
 		this.s=s;
 	}
 	public void run() {
-		int n=4;
+		int n=60;
 		while(true) {
 			if(n==0) {
 				c.remove(startPane);
