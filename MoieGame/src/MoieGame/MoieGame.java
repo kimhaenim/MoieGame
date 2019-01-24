@@ -53,7 +53,6 @@ class feverstarttime extends Thread{
 				feverstartPane.hide();
 				c.add(feverPane);
 			}
-			System.out.println(timer);
 			counter.setText(String.valueOf(timer));
 		try {
 			Thread.sleep(1000);
@@ -63,7 +62,6 @@ class feverstarttime extends Thread{
 	}
 }
 }
-
 class change_moie2 extends Thread{
 	private JButton hole;
 	ImageIcon moie2 = new ImageIcon("images/moie2.jpg");
@@ -72,7 +70,7 @@ class change_moie2 extends Thread{
 	}
 	public void run() {
 		int n=0;
-		int random = (int)(Math.random()*5000);
+		int random = (int)(Math.random()*4000);
 		while(true) {
 			
 			hole.setIcon(moie2);
@@ -106,27 +104,44 @@ class change_moie3 extends Thread{
 }
 }
 class timeover extends Thread{
-	private JLabel time;
-	private JPanel moiePane;
-	private JLabel end;
-	public timeover(JLabel time, JPanel moiePane, JLabel end) {
+	JLabel time;
+	JPanel startPane;
+	JPanel score;
+	JPanel endPane;
+	JLabel end;
+	JLabel evaluation;
+	Container c;
+	JPanel moiePane;
+	score s;
+	public timeover(JLabel time, JPanel startPane, JPanel score, JPanel endPane, JLabel end, JLabel evaluation, Container c, JPanel moiePane, score s) {
 		this.time = time;
-		this.moiePane=moiePane;
+		this.startPane=startPane;
+		this.score= score;
+		this.endPane=endPane;
 		this.end= end;
+		this.evaluation=evaluation;
+		this.c=c;
+		this.moiePane=moiePane;
+		this.s=s;
 	}
 	public void run() {
-		int n=30;
+		int n=4;
 		while(true) {
 			if(n==0) {
-				moiePane.removeAll();
-				moiePane.add(end); //남은시간이 0초가 되었을때 총점수를 알려주는 화면 깔끔하게 변경할것
-				end.setSize(500,500);
-				end.setLocation(250,250);
+				c.remove(startPane);
+				c.remove(moiePane);
+				score.hide();	
+				c.add(endPane, BorderLayout.CENTER);
+			
+			if(Integer.parseInt(s.getscore_end())<200) {
+					evaluation.setText("허접이시네요");
+				}
 			}
 			if(n<0)
 				break;
 			time.setText("남은시간 : "+n+"초");
 			n--;
+			
 		try {
 			Thread.sleep(1000);
 		}catch(InterruptedException e) {
@@ -139,7 +154,7 @@ class frame extends JFrame{
 	score s = new score();
 	static Container c;
 		JPanel score = new JPanel(new GridLayout(1,3,10,10));
-		JPanel startPane = new JPanel();
+		static JPanel startPane = new JPanel();
 			BufferedImage startimage = null;
 			JButton start = new JButton("게임시작");
 		static JPanel moiePane = new JPanel(new GridLayout(3,3,10,10));
@@ -153,13 +168,16 @@ class frame extends JFrame{
 			JLabel scorecount = new JLabel(s.getscore());
 			JLabel tab = new JLabel("");
 			JLabel time = new JLabel("");
-			JLabel end = new JLabel("");
 		static JPanel feverstartPane =new JPanel(new GridLayout(1,1,10,10));
 			JLabel fevernotify = new JLabel(new ImageIcon("images/fevertimestart.jpg"));
 		static JPanel feverPane = new JPanel(new GridLayout(3,3,0,0));
 			static JButton feverhole[]=new JButton[8];
 			static JLabel counter = new JLabel("13");
 			Toolkit toolkit = Toolkit.getDefaultToolkit();
+		static JPanel endPane = new JPanel(new GridLayout(1,1,10,10));
+			JLabel gameover = new JLabel("GAME OVER");
+			JLabel end = new JLabel("");
+			JLabel evaluation = new JLabel("");
 	Image image = toolkit.getImage("images/hammer1.jpg");
 	Image image2 = toolkit.getImage("images/hammer2.jpg");
 	Point hotspot = new Point(0,0);
@@ -175,14 +193,14 @@ class frame extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		c.setLayout(new BorderLayout());
 		c.setBackground(Color.GREEN);
-		score.setBackground(Color.PINK);
-		moiePane.setBackground(Color.GREEN);
 		setCursor(cursor);
 		
+		
+		//StartPane
 		try {
 			startimage = ImageIO.read(new File("images/gamestart.jpg"));
 		}catch(IOException e) {
-			JOptionPane.showMessageDialog(null, "이미지 불러오기 실패");
+			JOptionPane.showMessageDialog(null, "스타트 이미지 불러오기 실패");
 			System.exit(0);
 		}
 		MyPanel panel = new MyPanel();
@@ -196,6 +214,10 @@ class frame extends JFrame{
 		start.setLocation(230, 500);
 		startPane.add(start);
 		
+		
+		//moiePane
+		score.setBackground(Color.PINK);
+		moiePane.setBackground(Color.GREEN);
 		for(int i=0; i<9; i++) {
 			hole[i]= new JButton(moie1);
 			hole[i].setBackground(Color.GREEN);
@@ -207,11 +229,13 @@ class frame extends JFrame{
 			m3[i].start();
 			moiePane.add(hole[i]);
 		}
-		timeover timethread = new timeover(time, moiePane, end);
+		timeover timethread = new timeover(time, startPane,score, endPane, end, evaluation,c, moiePane,s);
 		score.add(scorecount);
 		score.add(tab);
 		score.add(time);
 		
+		
+		//feverPane
 		feverstartPane.add(fevernotify);
 		for(int i=0; i<8; i++) {
 			feverhole[i]= new JButton(moie3);
@@ -224,7 +248,6 @@ class frame extends JFrame{
 		counter.setFont(counter.getFont().deriveFont(120.0f));
 		counter.setForeground(Color.WHITE);
 		counter.setHorizontalAlignment(JLabel.CENTER);
-
 		for(int i=0; i<4; i++) {
 			feverPane.add(feverhole[i]);
 			feverhole[i].addActionListener(new MyActionListener());
@@ -234,11 +257,31 @@ class frame extends JFrame{
 			feverPane.add(feverhole[i]);
 			feverhole[i].addActionListener(new MyActionListener());
 		}
+		
+		
+		//endPane
+		endPane.setBackground(Color.BLACK);
+		endPane.setLayout(null);
+		endPane.add(gameover);
+		endPane.add(end);
+		endPane.add(evaluation);
+		gameover.setFont(gameover.getFont().deriveFont(80.0f));
+		gameover.setForeground(Color.RED);
+		gameover.setSize(600,300);
+		gameover.setLocation(105,150);
+		end.setFont(start.getFont().deriveFont(40.0f));
+		end.setForeground(Color.WHITE);
+		end.setSize(560,100);
+		end.setLocation(135, 300);
+		evaluation.setForeground(Color.WHITE);
+		evaluation.setFont(start.getFont().deriveFont(40.0f));
+		evaluation.setSize(560,100);
+		evaluation.setLocation(220,400);
+		
 		c.add(startPane,BorderLayout.CENTER);
 		setSize(700,700);
 		setVisible(true);
 		timethread.start();
-		
 	}
 	class MyActionListener implements ActionListener{
 		//두더지를 잡을 때마다 잡았다는 표시 할것
@@ -273,14 +316,16 @@ class frame extends JFrame{
 				}
 			}
 			scorecount.setText(s.getscore());
-			end.setText("당신의 총 점수는 "+s.getscore_end()+"점입니다!");
-			if(s.getscore_end().equals("20")||s.getscore_end().equals("120")){
-				fever();
-			}
+			
 			if(counter.getText().equals("0")) {
 				feverPane.hide();
 				moiePane.show();
 			}
+			end.setText("당신의 총 점수는 "+s.getscore_end()+"점!!");
+			if(s.getscore_end().equals("20")||s.getscore_end().equals("100")){
+				fever();
+			}
+			
 		}
 	}
 	class MyMouseListener extends MouseAdapter{
