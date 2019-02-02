@@ -94,7 +94,7 @@ class change_moie3 extends Thread{
 	}
 	public void run() {
 		int n=0;
-		int random = (int)(Math.random()*5000);
+		int random = (int)(Math.random()*15000);
 		while(true) {
 			hole.setIcon(moie2);
 			n++;
@@ -185,10 +185,10 @@ class frame extends JFrame{
 			JLabel gameover = new JLabel("GAME OVER");
 			JLabel end = new JLabel("");
 			JLabel evaluation = new JLabel("");
-	Image image = toolkit.getImage("images/hammer1.jpg");
-	Image image2 = toolkit.getImage("images/hammer2.jpg");
-	Point hotspot = new Point(0,0);
-	Cursor cursor = toolkit.createCustomCursor(image, hotspot, "hammer1");
+	Toolkit tk = Toolkit.getDefaultToolkit();
+	Image hammer1 = toolkit.getImage("images/hammer1.png");
+	Image hammer2 = toolkit.getImage("images/hammer2.png");
+	Cursor cursor = tk.createCustomCursor(hammer1, new Point(10,10), "hammer1");
 	class MyPanel extends JPanel{
 		public void paint(Graphics g) {
 			g.drawImage(startimage,0,0,null);
@@ -201,7 +201,7 @@ class frame extends JFrame{
 		c.setLayout(new BorderLayout());
 		c.setBackground(Color.GREEN);
 		setCursor(cursor);
-		
+
 		//StartPane
 		try {
 			startimage = ImageIO.read(new File("images/gamestart.jpg"));
@@ -303,6 +303,7 @@ class frame extends JFrame{
 					if(hole[i].getIcon().toString().equals("images/moie2.jpg")) {
 						s.start();
 						hole[i].setIcon(moie1);
+						
 						//killmoie.setText(s.getscore_end()+"마리");
 					}
 				}
@@ -336,14 +337,6 @@ class frame extends JFrame{
 				fever();
 			}
 			
-		}
-	}
-	class MyMouseListener extends MouseAdapter{
-		public void mouseclicked(MouseEvent e) {
-			//killmoie.setLocation(e.getX(),e.getY());
-			//System.out.println("click");
-			//Cursor cursor = toolkit.createCustomCursor(image, hotspot, "hammer2");
-			//setCursor(cursor); //마우스 모양 수정해야함. 뿅망치를 눌렀을때 변경 해결중
 		}
 	}
 	public static void fever() {
