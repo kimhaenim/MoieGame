@@ -47,14 +47,12 @@ class feverstarttime extends Thread{
 			if(timer==0) {
 				counter.setText("0");
 				feverPane.hide();
-				c.add(moiePane);
 				moiePane.show();
 				break;
 			}
 			timer--;
 			feverstartPane.show();
 			if(timer==10){
-				//feverstartPane.hide();
 				c.remove(feverstartPane);
 				c.add(feverPane);
 				feverPane.show();
@@ -70,16 +68,15 @@ class feverstarttime extends Thread{
 }
 class change_moie2 extends Thread{
 	private JButton hole;
-	ImageIcon moie2 = new ImageIcon("images/moie2.jpg");
+	ImageIcon moie1 = new ImageIcon("images/moie1.jpg");
 	public change_moie2(JButton hole) {
 		this.hole = hole;
 	}
 	public void run() {
 		int n=0;
-		int random = (int)(Math.random()*4000);
+		int random = (int)(Math.random()*3000);
 		while(true) {
-			
-			hole.setIcon(moie2);
+			hole.setIcon(moie1);
 			n++;
 		try {
 			Thread.sleep(random);
@@ -91,7 +88,7 @@ class change_moie2 extends Thread{
 }
 class change_moie3 extends Thread{
 	private JButton hole;
-	ImageIcon moie3 = new ImageIcon("images/moie3.jpg");
+	ImageIcon moie2 = new ImageIcon("images/moie2.jpg");
 	public change_moie3(JButton hole) {
 		this.hole = hole;
 	}
@@ -99,7 +96,7 @@ class change_moie3 extends Thread{
 		int n=0;
 		int random = (int)(Math.random()*5000);
 		while(true) {
-			hole.setIcon(moie3);
+			hole.setIcon(moie2);
 			n++;
 		try {
 			Thread.sleep(random);
@@ -140,10 +137,10 @@ class timeover extends Thread{
 				c.add(endPane, BorderLayout.CENTER);
 			
 			if(Integer.parseInt(s.getscore_end())<200) {
-					evaluation.setText("허접이시네요ㅋ");
-				}else if(Integer.parseInt(s.getscore_end())<400) {
-					evaluation.setText("좀하시네요?ㅋ");
-				}else if(Integer.parseInt(s.getscore_end())<600) {
+					evaluation.setText("분발하세요.");
+				}else if(Integer.parseInt(s.getscore_end())<300) {
+					evaluation.setText("대단하네요!");
+				}else if(Integer.parseInt(s.getscore_end())<1000) {
 					evaluation.setText("신의컨트롤..");
 				}
 			}
@@ -168,14 +165,13 @@ class frame extends JFrame{
 			BufferedImage startimage = null;
 			JButton start = new JButton("게임시작");
 		static JPanel moiePane = new JPanel(new GridLayout(3,3,10,10));
-			static JLabel killmoie = new JLabel("0마리");
+			//static JLabel killmoie = new JLabel("0마리");
 			static JButton hole[]=new JButton[9];
 			change_moie2 m2[]=new change_moie2[9];	
 			change_moie3 m3[]=new change_moie3[9];
 			change_moie3 m3_2[]=new change_moie3[8];
 			ImageIcon moie1 = new ImageIcon("images/moie1.jpg");
 			ImageIcon moie2 = new ImageIcon("images/moie2.jpg");
-			ImageIcon moie3 = new ImageIcon("images/moie3.jpg");
 			JLabel scorecount = new JLabel(s.getscore());
 			JLabel tab = new JLabel("");
 			JLabel time = new JLabel("");
@@ -248,7 +244,7 @@ class frame extends JFrame{
 		//feverPane
 		feverstartPane.add(fevernotify);
 		for(int i=0; i<8; i++) {
-			feverhole[i]= new JButton(moie3);
+			feverhole[i]= new JButton(moie2);
 			feverhole[i].setBackground(Color.GREEN);
 			feverhole[i].addActionListener(new MyActionListener());
 			m3_2[i] = new change_moie3(feverhole[i]);
@@ -279,12 +275,12 @@ class frame extends JFrame{
 		gameover.setForeground(Color.RED);
 		gameover.setSize(600,300);
 		gameover.setLocation(105,150);
-		end.setFont(start.getFont().deriveFont(40.0f));
+		end.setFont(end.getFont().deriveFont(40.0f));
 		end.setForeground(Color.WHITE);
 		end.setSize(560,100);
 		end.setLocation(135, 300);
 		evaluation.setForeground(Color.WHITE);
-		evaluation.setFont(start.getFont().deriveFont(40.0f));
+		evaluation.setFont(end.getFont().deriveFont(40.0f));
 		evaluation.setSize(560,100);
 		evaluation.setLocation(220,400);
 		
@@ -300,32 +296,32 @@ class frame extends JFrame{
 				startPane.hide();
 				c.add(score, BorderLayout.NORTH);
 				c.add(moiePane, BorderLayout.CENTER);
+
 			}
 			for(int i=0; i<9; i++) {
 				if(e.getSource()==hole[i]) {	
-					if(hole[i].getIcon().toString().equals("images/moie3.jpg")) {
+					if(hole[i].getIcon().toString().equals("images/moie2.jpg")) {
 						s.start();
 						hole[i].setIcon(moie1);
-						killmoie.setText(s.getscore_end()+"마리");
-						
+						//killmoie.setText(s.getscore_end()+"마리");
 					}
 				}
 			}
 			for(int i=0; i<4; i++) {
 				if(e.getSource()==feverhole[i]) {
-					if(feverhole[i].getIcon().toString().equals("images/moie3.jpg")) {
+					if(feverhole[i].getIcon().toString().equals("images/moie2.jpg")) {
 						s.fever();
 						feverhole[i].setIcon(moie1);
-						killmoie.setText(s.getscore_end()+"마리");
+						//killmoie.setText(s.getscore_end()+"마리");
 					}
 				}
 			}
 			for(int i=4; i<8; i++) {
 				if(e.getSource()==feverhole[i]) {
-					if(feverhole[i].getIcon().toString().equals("images/moie3.jpg")) {
+					if(feverhole[i].getIcon().toString().equals("images/moie2.jpg")) {
 						s.fever();
 						feverhole[i].setIcon(moie1);
-						killmoie.setText(s.getscore_end()+"마리");
+						//killmoie.setText(s.getscore_end()+"마리");
 					}
 				}
 			}
@@ -336,7 +332,7 @@ class frame extends JFrame{
 				moiePane.show();
 			}
 			end.setText("당신의 총 점수는 "+s.getscore_end()+"점!!");
-			if(s.getscore_end().equals("20")||s.getscore_end().equals("130")){
+			if(s.getscore_end().equals("20")||s.getscore_end().equals("200")){
 				fever();
 			}
 			
@@ -344,7 +340,7 @@ class frame extends JFrame{
 	}
 	class MyMouseListener extends MouseAdapter{
 		public void mouseclicked(MouseEvent e) {
-			killmoie.setLocation(e.getX(),e.getY());
+			//killmoie.setLocation(e.getX(),e.getY());
 			//System.out.println("click");
 			//Cursor cursor = toolkit.createCustomCursor(image, hotspot, "hammer2");
 			//setCursor(cursor); //마우스 모양 수정해야함. 뿅망치를 눌렀을때 변경 해결중
