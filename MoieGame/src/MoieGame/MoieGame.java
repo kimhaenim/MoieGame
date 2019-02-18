@@ -1,15 +1,17 @@
 package MoieGame;
-import java.util.Scanner;
 import java.awt.*;
-
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
-import javax.swing.event.*;
 class score{
 	int cnt;
 	public score() {
@@ -52,7 +54,7 @@ class feverstarttime extends Thread{
 			}
 			timer--;
 			feverstartPane.show();
-			if(timer==10){
+			if(timer==5){
 				c.remove(feverstartPane);
 				c.add(feverPane);
 				feverPane.show();
@@ -136,11 +138,11 @@ class timeover extends Thread{
 				score.hide();	
 				c.add(endPane, BorderLayout.CENTER);
 			
-			if(Integer.parseInt(s.getscore_end())<200) {
+			if(Integer.parseInt(s.getscore_end())<100) {
 					evaluation.setText("분발하세요.");
-				}else if(Integer.parseInt(s.getscore_end())<300) {
+				}else if(Integer.parseInt(s.getscore_end())<200) {
 					evaluation.setText("대단하네요!");
-				}else if(Integer.parseInt(s.getscore_end())<1000) {
+				}else if(Integer.parseInt(s.getscore_end())<300) {
 					evaluation.setText("신의컨트롤..");
 				}
 			}
@@ -165,7 +167,6 @@ class frame extends JFrame{
 			BufferedImage startimage = null;
 			JButton start = new JButton("게임시작");
 		static JPanel moiePane = new JPanel(new GridLayout(3,3,10,10));
-			//static JLabel killmoie = new JLabel("0마리");
 			static JButton hole[]=new JButton[9];
 			change_moie2 m2[]=new change_moie2[9];	
 			change_moie3 m3[]=new change_moie3[9];
@@ -189,19 +190,32 @@ class frame extends JFrame{
 	Image hammer1 = toolkit.getImage("images/hammer1.png");
 	Image hammer2 = toolkit.getImage("images/hammer2.png");
 	Cursor cursor = tk.createCustomCursor(hammer1, new Point(10,10), "hammer1");
+	//Cursor cursor2 = tk.createCustomCursor(hammer2, new Point(10,10), "hammer2");
 	class MyPanel extends JPanel{
 		public void paint(Graphics g) {
 			g.drawImage(startimage,0,0,null);
 		}
 	}
+	public static void sound(String file) {
+		try {
+			AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+			Clip clip;
+			clip = AudioSystem.getClip();
+			clip.open(ais);
+			clip.start();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public frame() {
-		 c= getContentPane();
+		c= getContentPane();
 		setTitle("두더지 게임");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		c.setLayout(new BorderLayout());
 		c.setBackground(Color.GREEN);
 		setCursor(cursor);
-
+		sound("sounds/asgard.wav");
+		
 		//StartPane
 		try {
 			startimage = ImageIO.read(new File("images/gamestart.jpg"));
@@ -289,22 +303,20 @@ class frame extends JFrame{
 		setVisible(true);
 		timethread.start();
 	}
+	
 	class MyActionListener implements ActionListener{
-		//두더지를 잡을 때마다 잡았다는 표시 할것
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource()==start) {
 				startPane.hide();
 				c.add(score, BorderLayout.NORTH);
 				c.add(moiePane, BorderLayout.CENTER);
-
+				
 			}
 			for(int i=0; i<9; i++) {
 				if(e.getSource()==hole[i]) {	
 					if(hole[i].getIcon().toString().equals("images/moie2.jpg")) {
 						s.start();
 						hole[i].setIcon(moie1);
-						
-						//killmoie.setText(s.getscore_end()+"마리");
 					}
 				}
 			}
@@ -313,7 +325,6 @@ class frame extends JFrame{
 					if(feverhole[i].getIcon().toString().equals("images/moie2.jpg")) {
 						s.fever();
 						feverhole[i].setIcon(moie1);
-						//killmoie.setText(s.getscore_end()+"마리");
 					}
 				}
 			}
@@ -322,7 +333,6 @@ class frame extends JFrame{
 					if(feverhole[i].getIcon().toString().equals("images/moie2.jpg")) {
 						s.fever();
 						feverhole[i].setIcon(moie1);
-						//killmoie.setText(s.getscore_end()+"마리");
 					}
 				}
 			}
@@ -333,23 +343,21 @@ class frame extends JFrame{
 				moiePane.show();
 			}
 			end.setText("당신의 총 점수는 "+s.getscore_end()+"점!!");
-			if(s.getscore_end().equals("20")||s.getscore_end().equals("200")){
+			if(s.getscore_end().equals("20")||s.getscore_end().equals("100")){
 				fever();
 			}
-			
 		}
 	}
 	public static void fever() {
 		moiePane.hide();
 		c.add(feverstartPane);
-		int timer=13;
+		int timer=8;
 		feverstarttime ft = new feverstarttime(timer,c,feverstartPane, feverPane, moiePane, counter);
 		ft.start();	
-	
 	}
 }
 
-public class MoieGame {
+public class MoieGame{
 	public static void main(String[] args) {
 		frame Frame = new frame();
 	}
